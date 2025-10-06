@@ -1,98 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Clutch Dump | Coming Soon</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>theclutchdump — Real-world car acceleration data</title>
+  <meta name="description" content="Real acceleration data. Real cars. No fluff. theclutchdump is a dark, data-first hub for Dragy-verified 0–60 and 1/4 mile results with transparent methods and zero hype." />
+  <meta property="og:title" content="theclutchdump — Real-world car acceleration data" />
+  <meta property="og:description" content="Dragy-verified, real-world results. Truth, trust, reliability, transparency, thoroughness." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://theclutchdump.com/og-image.png" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+
   <style>
-    /* --- Base Reset --- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root{
+      --bg:#0b0f14;
+      --panel:#121821;
+      --text:#e6eef6;
+      --muted:#98a6b3;
+      --accent:#35d0ff; /* neon-cyan */
+      --accent2:#ff3b3b; /* neon-red */
+      --outline:#1b2531;
+      --ok:#92ff7a;
     }
-
-    /* --- Theme --- */
-    body {
-      background-color: #0a0a0a;
-      color: #e0e0e0;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-      overflow: hidden;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Archivo', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, #122030 0%, transparent 70%),
+        linear-gradient(180deg, #0b0f14 0%, #0b0f14 100%);
+      color:var(--text);
+      line-height:1.6;
+      letter-spacing:.2px;
     }
-
-    /* --- Hero Section --- */
-    h1 {
-      font-size: 3rem;
-      letter-spacing: 2px;
-      color: #fff;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    header{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:saturate(140%) blur(6px);
+      background:rgba(10,14,20,.55);
+      border-bottom:1px solid var(--outline);
     }
-
-    h1 span {
-      color: #d32f2f;
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+    .logo{
+      width:40px;height:40px;border-radius:10px;
+      background:
+        radial-gradient(120% 100% at 30% 20%, #2cf 0%, #179 60%, #0b0f14 100%);
+      border:1px solid #2af0ff55;
+      box-shadow:0 0 20px #2af0ff20 inset, 0 0 40px #2af0ff20;
+      position:relative;
     }
-
-    p {
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-      color: #bbb;
+    .logo:after{
+      content:"";position:absolute;inset:8px 6px 8px 6px;border-radius:8px;
+      border:2px solid #2af0ff66;clip-path:polygon(0 55%, 25% 35%, 55% 55%, 100% 20%, 100% 80%, 55% 55%, 25% 75%, 0 55%);
     }
-
-    /* --- Button --- */
-    a.button {
-      display: inline-block;
-      padding: 0.75rem 2rem;
-      color: #fff;
-      background-color: #d32f2f;
-      text-decoration: none;
-      border-radius: 4px;
-      font-weight: 600;
-      transition: background 0.3s ease;
+    .wordmark{font-weight:800;letter-spacing:.5px}
+    .nav a.btn{
+      padding:10px 14px;border:1px solid var(--outline);border-radius:10px;background:var(--panel);
     }
-
-    a.button:hover {
-      background-color: #b71c1c;
+    .hero{padding:72px 24px 48px;border-bottom:1px solid var(--outline)}
+    .hero h1{
+      font-size: clamp(32px, 6vw, 60px);
+      line-height:1.05;margin:8px 0 12px 0;
+      text-shadow:0 0 30px #2af0ff18;
     }
-
-    /* --- Footer --- */
-    footer {
-      position: absolute;
-      bottom: 15px;
-      font-size: 0.85rem;
-      color: #555;
+    .tag{
+      display:inline-block;
+      font-size:13px;font-weight:700;letter-spacing:.8px;
+      color:#001016;background: linear-gradient(90deg, var(--accent), var(--accent2));
+      padding:6px 10px;border-radius:999px;text-transform:uppercase;
     }
-
-    /* --- Subtle Animation --- */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .hero p{color:var(--muted);max-width:780px;margin:8px 0 24px}
+    .cta{
+      display:flex;flex-wrap:wrap;gap:12px;margin-top:8px
     }
-
-    h1, p, a.button {
-      animation: fadeIn 1s ease forwards;
+    .btn-primary,.btn-ghost{
+      padding:12px 16px;border-radius:12px;font-weight:700;letter-spacing:.3px;
+      border:1px solid var(--outline);background:var(--panel)
     }
-
-    h1 { animation-delay: 0.2s; }
-    p { animation-delay: 0.4s; }
-    a.button { animation-delay: 0.6s; }
+    .btn-primary{border-color:#2af0ff80;box-shadow:0 0 24px #2af0ff26 inset;}
+    .grid{display:grid;gap:16px}
+    @media(min-width:900px){.grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)}}
+    section{padding:44px 24px;border-bottom:1px solid var(--outline)}
+    .card{
+      background:linear-gradient(180deg,#121821, #0e141c);
+      border:1px solid var(--outline);
+      border-radius:16px;padding:20px;
+    }
+    h2{font-size:clamp(22px,3.2vw,34px);margin:0 0 10px}
+    h3{font-size:18px;margin:0 0 8px}
+    ul{padding-left:18px;margin:8px 0}
+    .values{display:flex;flex-wrap:wrap;gap:8px}
+    .pill{
+      padding:8px 12px;border:1px solid var(--outline);
+      border-radius:999px;background:#0f1520;font-weight:700;font-size:13px
+    }
+    .creator{
+      display:flex;gap:16px;align-items:flex-start
+    }
+    .avatar{
+      width:58px;height:58px;border-radius:12px;border:1px solid var(--outline);
+      background:
+        radial-gradient(120% 100% at 30% 20%, #223448 0%, #17222f 60%, #0b0f14 100%);
+      display:grid;place-items:center;font-weight:800;color:#9fb6c9;
+    }
+    .muted{color:var(--muted)}
+    .list-slim li{margin:6px 0}
+    .foot{display:grid;gap:8px;place-items:center;padding:24px;color:#8fa1b3}
+    .badge{font-size:12px;color:#8fa1b3}
+    .code{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:13px;background:#0e141c;border:1px solid var(--outline);padding:4px 8px;border-radius:6px}
   </style>
 </head>
 <body>
-  <h1><span>The</span> Clutch Dump</h1>
-  <p>
-    Real acceleration data. Real cars. No fluff.  
-    <br />A new era of automotive truth is coming.
-  </p>
-  <a href="#" class="button">Stay Tuned</a>
-  <footer>&copy; 2025 The Clutch Dump — All Rights Reserved</footer>
+
+  <!-- Header -->
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="wordmark">theclutchdump</div>
+      </a>
+      <nav class="nav">
+        <a class="btn" href="#mission">Mission</a>
+        <a class="btn" href="#what">What We’re Building</a>
+        <a class="btn" href="#methods">How We Test</a>
+        <a class="btn" href="#creators">Creators</a>
+        <a class="btn" href="#faq">FAQ</a>
+        <a class="btn" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero wrap">
+    <span class="tag">Coming Soon</span>
+    <h1>Real acceleration data. Real cars. <span style="color:var(--accent)">No fluff.</span></h1>
+    <p>
+      We’re building a data-first home for <strong>Dragy-verified</strong> 0–60 and ¼-mile results.
+      Our promise: <em>truth, trust, reliability, transparency, thoroughness</em>—with clean,
+      consistent testing and zero exaggeration. Bookmark us and watch this space.
+    </p>
+    <div class="cta">
+      <a class="btn-primary" href="#what">See what we’re building</a>
+      <a class="btn-ghost" href="#contact">Get in touch / submit a car</a>
+    </div>
+  </section>
+
+  <!-- Mission & Values -->
+  <section id="mission" class="wrap">
+    <h2>Mission</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <p>
+          <strong>Make performance info accessible</strong> for as many cars as we can get our hands on—documented with
+          repeatable methods and presented clearly so enthusiasts, racers, modifiers, mechanics and buyers can trust what they see.
+        </p>
+        <div class="values" style="margin-top:10px">
+          <span class="pill">Truth</span>
+          <span class="pill">Trust</span>
+          <span class="pill">Reliability</span>
+          <span class="pill">Transparency</span>
+          <span class="pill">Thoroughness</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>What success looks like</h3>
+        <ul class="list-slim">
+          <li>Consistent tests and <strong>clear, concise</strong> presentation.</li>
+          <li><strong>Clean interface</strong> with fast access to the data you want.</li>
+          <li>A recognizable brand the community can rely on.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we're building -->
+  <section id="what" class="wrap">
+    <h2>What we’re building first (MVP)</h2>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>Results Browser</h3>
+        <p class="muted">Search &amp; filter a growing database of car tests.</p>
+        <ul class="list-slim">
+          <li>Filter by make, model, year, body style.</li>
+          <li>Sort by 0–60 and ¼-mile times.</li>
+          <li>Filter by <span class="code">modified</span>/<span class="code">stock</span>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Test Pages (No opinions)</h3>
+        <p class="muted">Each test page sticks to verified facts.</p>
+        <ul class="list-slim">
+          <li>0–60 &amp; ¼-mile results.</li>
+          <li>Make / model / year, mods, Dragy proof image.</li>
+          <li>Manufacturer HP/Torque.</li>
+          <li>Conditions: weather &amp; surface.</li>
+          <li>Link to full YouTube run.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>About &amp; Methods</h3>
+        <p class="muted">We’ll explain our process and why it’s consistent.</p>
+        <ul class="list-slim">
+          <li>How we capture and validate times.</li>
+          <li>What we standardize across cars.</li>
+          <li>Where subjectivity lives (separate “Driving Experience”).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid grid-3" style="margin-top:16px">
+      <div class="card">
+        <h3>Video &amp; Media</h3>
+        <p class="muted">Short explanations and full-run videos per test.</p>
+      </div>
+      <div class="card">
+        <h3>Community</h3>
+        <p class="muted">We’ll encourage owner submissions to expand coverage.</p>
+      </div>
+      <div class="card">
+        <h3>Future</h3>
+        <ul class="list-slim">
+          <li>Charts &amp; visualizations.</li>
+          <li>Side-by-side comparisons.</li>
+          <li>Newsletter / mailing list.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- How we test -->
+  <section id="methods" class="wrap">
+    <h2>How we test (at a glance)</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Principles</h3>
+        <ul class="list-slim">
+          <li><strong>Consistent setup</strong> across vehicles.</li>
+          <li><strong>Dragy-verified</strong> runs with proof image.</li>
+          <li><strong>Clear conditions</strong>: weather, surface, notes.</li>
+          <li><strong>Separate opinions</strong> into a “Driving Experience” page.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Standard data per test</h3>
+        <ul class="list-slim">
+          <li>Make / model / year &nbsp;•&nbsp; Stock vs. mods listed.</li>
+          <li>0–60 mph &amp; ¼-mile time.</li>
+          <li>Manufacturer HP / Torque.</li>
+          <li>Conditions (weather/surface) &amp; Dragy evidence.</li>
+          <li>YouTube link to the run.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creators -->
+  <section id="creators" class="wrap">
+    <h2>Creators</h2>
+    <div class="grid grid-3">
+      <div class="card creator">
+        <div class="avatar">E</div>
+        <div>
+          <h3>Ethan</h3>
+          <p class="muted">Frontend development &amp; member newsletters. Focused on a clean, fast UI and regular community updates.</p>
+        </div>
+      </div>
+      <div class="card creator">
+        <div class="avatar">C</div>
+        <div>
+          <h3>Ciara</h3>
+          <p class="muted">UX/UI &amp; brand planning. Leads vision, look &amp; feel, and research into the next ventures that amplify our impact.</p>
+        </div>
+      </div>
+      <div class="card creator">
+        <div class="avatar">C</div>
+        <div>
+          <h3>Caden</h3>
+          <p class="muted">Backend development, hosting, and designated driver for test logistics. Keeps the data pipeline reliable and scalable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community & Dallas anchor -->
+  <section class="wrap">
+    <h2>Built with the community</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <p>
+          We’re grounded in a strong car community in Dallas and open to collaborations with local groups
+          like <em>BurgersnBuilds</em>. As traffic and viewership grow, we’ll explore sustainable ways to keep results
+          <strong>free</strong>—such as ads, sponsorships, or merch—with transparency about what we do and why.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Want your car tested?</h3>
+        <p class="muted">Owner submissions help our platform grow. We’ll share the methods, you keep the keys.</p>
+        <p><a href="#contact" class="btn-primary">Submit your car</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="wrap">
+    <h2>FAQ</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Are results free?</h3>
+        <p class="muted">Yes. Results should be free to access. We’ll monetize elsewhere if needed so the core data stays open.</p>
+      </div>
+      <div class="card">
+        <h3>Do you accept user submissions?</h3>
+        <p class="muted">Absolutely. Community submissions can grow coverage exponentially. We’ll publish how to participate soon.</p>
+      </div>
+      <div class="card">
+        <h3>Where’s the “opinion” content?</h3>
+        <p class="muted">Subjective impressions live on a separate “Driving Experience” page so the main results stay objective.</p>
+      </div>
+      <div class="card">
+        <h3>When can I browse results?</h3>
+        <p class="muted">We’re in MVP build mode. First release will include search, filters, and individual test pages with Dragy proof.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact / CTA -->
+  <section id="contact" class="wrap">
+    <h2>Stay in the loop</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Contact</h3>
+        <p class="muted">
+          Email us: <a href="mailto:hello@theclutchdump.com">hello@theclutchdump.com</a><br/>
+          YouTube: <a href="#" rel="noopener">youtube.com/@theclutchdump</a> (coming soon)
+        </p>
+        <p><span class="badge">We’ll add a proper signup soon.</span></p>
+      </div>
+      <div class="card">
+        <h3>Submit your car</h3>
+        <p class="muted">Want your vehicle featured when we launch? Tell us the basics:</p>
+        <ul class="list-slim muted">
+          <li>Make / model / year</li>
+          <li>Stock or list of mods</li>
+          <li>General availability &amp; location</li>
+        </ul>
+        <p><a class="btn-ghost" href="mailto:hello@theclutchdump.com?subject=Car%20Submission">Email submission details</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="foot wrap">
+    <div>&copy; <script>document.write(new Date().getFullYear())</script> theclutchdump. All rights reserved.</div>
+    <div class="badge">Made for enthusiasts • Dragy-verified • Data first</div>
+  </footer>
+
+  <!-- Placeholder for future analytics -->
+  <!-- <script defer src="/analytics.js"></script> -->
 </body>
 </html>
