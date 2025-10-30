@@ -1,234 +1,606 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>theclutchdump — Real acceleration data</title>
-  <meta name="description" content="Dragy-verified, real-world 0–60 and 1/4-mile results. Clear methods, transparent data, no hype." />
-  <meta name="color-scheme" content="dark light" />
-  <meta name="theme-color" content="#0b0f14" />
-  <style>
-    :root{
-      --bg:#0b0f14;      /* background */
-      --panel:#121821;   /* cards */
-      --text:#e6eef6;    /* main text */
-      --muted:#9fb0bf;   /* secondary text */
-      --line:#1b2531;    /* borders */
-      --accent:#35d0ff;  /* links */
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height:1.6;
-    }
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
-    header{
-      border-bottom:1px solid var(--line);
-      background:#0d131b;
-    }
-    .wrap{max-width:1000px;margin:0 auto;padding:20px}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
-    .logo{width:36px;height:36px;border-radius:8px;background:radial-gradient(120% 100% at 30% 20%, #223448 0%, #17222f 60%, #0b0f14 100%);border:1px solid #2af0ff33}
-    nav{display:flex;flex-wrap:wrap;gap:10px}
-    nav a{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#0e141c}
-    h1,h2,h3{line-height:1.2;margin:0 0 8px}
-    h1{font-size:clamp(26px,4.5vw,40px);margin-top:6px}
-    h2{font-size:clamp(20px,3.5vw,28px);margin-top:6px}
-    h3{font-size:18px}
-    p{margin:6px 0}
-    .muted{color:var(--muted)}
-    section{border-bottom:1px solid var(--line);padding:24px 0}
-    .grid{display:grid;gap:14px}
-    @media(min-width:880px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:1fr 1fr 1fr}}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-    ul{margin:8px 0;padding-left:18px}
-    .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 10px;margin:4px 6px 0 0;background:#0f1520;font-weight:600;font-size:13px}
-    footer{color:var(--muted);padding:24px 0}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:13px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Acceleration Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Testing Procedures Section */
+        .procedures-section {
+            background: #f8f9fa;
+            padding: 3rem 2rem;
+        }
+
+        .procedures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .procedure-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .procedure-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        /* Results Page */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* Car Grid */
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .car-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .car-info {
+            padding: 1.5rem;
+        }
+
+        .car-info h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .car-specs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .spec-tag {
+            padding: 0.3rem 0.8rem;
+            background: #f0f0f0;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        /* Detail Page */
+        .detail-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .detail-image {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            margin: 2rem auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin: 2rem auto;
+            background: #f0f0f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .result-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .result-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .opinion-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .social-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Page Navigation */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-bottom: 2rem;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="wrap top">
-      <a class="brand" href="#">
-        <div class="logo" aria-hidden="true"></div>
-        <strong>theclutchdump</strong>
-      </a>
-      <nav>
-        <a href="#about">About</a>
-        <a href="#scope">What’s Coming</a>
-        <a href="#methods">Methods</a>
-        <a href="#creators">Creators</a>
-        <a href="#community">Community</a>
-        <a href="#contact">Contact</a>
-      </nav>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">🏎️ AccelTest</div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="showPage('home')">Home</a></li>
+                    <li><a href="#" onclick="showPage('results')">Tests</a></li>
+                    <li><a href="#" onclick="showPage('about')">About</a></li>
+                    <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <div class="hero">
+            <h1>Professional Car Acceleration Testing</h1>
+            <p>Precision metrics and real-world performance data for automotive enthusiasts</p>
+        </div>
+
+        <div class="procedures-section">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 1rem;">Testing Procedures</h2>
+                <div class="procedures-grid">
+                    <div class="procedure-card">
+                        <h3>Test Methods</h3>
+                        <p>We use GPS-based timing systems and onboard telemetry to capture accurate acceleration data. All tests are performed on closed courses under controlled conditions.</p>
+                    </div>
+                    <div class="procedure-card">
+                        <h3>Why These Methods</h3>
+                        <p>Our testing methodology ensures consistency and reliability. We account for variables like temperature, elevation, and road surface to provide comparable results across all vehicles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <main class="wrap">
-    <section id="about">
-      <h1>Real acceleration data. Real cars. No hype.</h1>
-      <p class="muted">
-        We’re building a straightforward home for <strong>Dragy-verified</strong> 0–60 and ¼-mile results.
-        Core values: <em>Truth, Trust, Reliability, Transparency, Thoroughness.</em>
-      </p>
-      <div class="card" style="margin-top:12px">
-        <h2>Mission</h2>
-        <p>
-          Make performance information accessible for as many cars as we can test. Present it clearly, keep tests consistent, and separate data from opinion.
-        </p>
-      </div>
-    </section>
+    <!-- Results/Tests Page -->
+    <div id="results" class="page">
+        <div class="container">
+            <h1>Test Results</h1>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Sort:</label>
+                    <select class="sort-select" onchange="sortCars(this.value)">
+                        <option value="name">Name</option>
+                        <option value="year">Year</option>
+                        <option value="performance">Performance</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter:</label>
+                    <button class="filter-btn active" onclick="filterCars('all')">All</button>
+                    <button class="filter-btn" onclick="filterCars('make', 'Ford')">Ford</button>
+                    <button class="filter-btn" onclick="filterCars('make', 'Mustang')">Mustang</button>
+                    <button class="filter-btn" onclick="filterCars('year', '2018')">2018</button>
+                    <button class="filter-btn" onclick="filterCars('engine', 'V8')">V8</button>
+                    <button class="filter-btn" onclick="filterCars('body', 'coupe')">Coupe</button>
+                    <button class="filter-btn" onclick="filterCars('body', 'sedan')">Sedan</button>
+                </div>
+            </div>
 
-    <section id="scope">
-      <h2>What’s coming (MVP)</h2>
-      <div class="grid grid-3">
-        <div class="card">
-          <h3>Results Browser</h3>
-          <ul>
-            <li>Search/filter by make, model, year, body style.</li>
-            <li>Sort by 0–60 and ¼-mile times.</li>
-            <li>Filter by <span class="mono">stock</span> vs <span class="mono">modified</span>.</li>
-          </ul>
+            <div class="car-grid" id="carGrid">
+                <!-- Cars will be populated by JavaScript -->
+            </div>
         </div>
-        <div class="card">
-          <h3>Test Pages</h3>
-          <ul>
-            <li>0–60 and ¼-mile results (Dragy proof image).</li>
-            <li>Make/model/year, mods, manufacturer HP/Torque.</li>
-            <li>Conditions (weather/surface) and a link to the run on YouTube.</li>
-            <li><strong>No opinions</strong> on the results page.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>About &amp; Process</h3>
-          <ul>
-            <li>How we collect and validate times.</li>
-            <li>What we standardize across vehicles.</li>
-            <li>Where subjective impressions live (“Driving Experience,” separate).</li>
-          </ul>
-        </div>
-      </div>
+    </div>
 
-      <div class="grid grid-3" style="margin-top:12px">
-        <div class="card">
-          <h3>Future</h3>
-          <ul>
-            <li>Charts &amp; visualizations.</li>
-            <li>Side-by-side comparisons.</li>
-            <li>Newsletter / mailing list.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Goals</h3>
-          <ul>
-            <li>Consistent tests; clear presentation.</li>
-            <li>Clean, fast interface to reach data quickly.</li>
-            <li>Recognizable, trustworthy brand.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Tech (planned)</h3>
-          <ul>
-            <li>Frontend: Angular (TypeScript, HTML, CSS).</li>
-            <li>Backend: Spring Boot (Java), PostgreSQL.</li>
-            <li>Hosting: GitHub Pages (temp) &amp; server for backend.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    <!-- Car Detail Page -->
+    <div id="detail" class="page">
+        <div class="container">
+            <a href="#" class="back-btn" onclick="showPage('results')">← Back to Results</a>
+            
+            <div class="detail-header">
+                <h1 id="detailName"></h1>
+                <div class="car-specs" id="detailSpecs"></div>
+            </div>
 
-    <section id="methods">
-      <h2>Methods (at a glance)</h2>
-      <div class="grid grid-2">
-        <div class="card">
-          <h3>Principles</h3>
-          <ul>
-            <li>Consistent setup across vehicles.</li>
-            <li>Dragy-verified runs with evidence.</li>
-            <li>Conditions recorded (weather, surface).</li>
-            <li>Objective data pages; opinions kept separate.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Standard data per test</h3>
-          <ul>
-            <li>Make / model / year; stock vs. mods listed.</li>
-            <li>0–60 mph time and ¼-mile time.</li>
-            <li>Manufacturer HP / Torque.</li>
-            <li>Conditions and Dragy screenshot.</li>
-            <li>YouTube link to the run.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+            <div class="detail-image" id="detailImage">Car Image</div>
 
-    <section id="creators">
-      <h2>Creators</h2>
-      <div class="grid grid-3">
-        <div class="card">
-          <h3>Ethan</h3>
-          <p class="muted">Frontend development and member newsletters. Focused on a clean, fast UI and regular community updates.</p>
-        </div>
-        <div class="card">
-          <h3>Ciara</h3>
-          <p class="muted">UX/UI and brand planning. Leads visual direction and research into new ventures that expand our impact.</p>
-        </div>
-        <div class="card">
-          <h3>Caden</h3>
-          <p class="muted">Backend development, hosting, and designated driver for test logistics. Keeps the data pipeline reliable and scalable.</p>
-        </div>
-      </div>
-    </section>
+            <div class="video-placeholder">Test Video Placeholder</div>
 
-    <section id="community">
-      <h2>Community &amp; Growth</h2>
-      <div class="grid grid-2">
-        <div class="card">
-          <h3>Submissions</h3>
-          <p class="muted">We will accept owner submissions to broaden coverage. You keep the keys; we publish the method and results.</p>
+            <h2>Test Results</h2>
+            <div class="results-grid" id="detailResults"></div>
+
+            <div class="opinion-section">
+                <h2>Our Opinion</h2>
+                <p id="detailOpinion"></p>
+            </div>
         </div>
-        <div class="card">
-          <h3>Dallas roots</h3>
-          <p class="muted">Built with the Dallas car community. Open to collaborations (e.g., BurgersnBuilds). Results remain free; we’ll explore transparent monetization (ads, sponsorships, merch) as traffic grows.</p>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="container">
+            <h1>About Us</h1>
+            <p>Information about your testing procedures and mission goes here.</p>
         </div>
-      </div>
-    </section>
+    </div>
 
-    <section id="status">
-      <h2>Status</h2>
-      <p class="muted">
-        We’re working toward an MVP with a searchable results database, test pages, and clear methods.
-        Timeline includes planning, MVP build, and refinement.
-      </p>
-      <div>
-        <span class="pill">Data-first</span>
-        <span class="pill">Dragy-verified</span>
-        <span class="pill">Objective results</span>
-        <span class="pill">Free access</span>
-      </div>
-    </section>
+    <!-- Contact Page -->
+    <div id="contact" class="page">
+        <div class="container">
+            <h1>Contact</h1>
+            <p>Contact information goes here.</p>
+        </div>
+    </div>
 
-    <section id="contact">
-      <h2>Contact</h2>
-      <div class="card">
-        <p>Email: <a href="mailto:hello@theclutchdump.com">hello@theclutchdump.com</a></p>
-        <p>Submissions (include make/model/year, stock or mods, location/availability):<br/>
-          <a href="mailto:hello@theclutchdump.com?subject=Car%20Submission">hello@theclutchdump.com</a>
-        </p>
-        <p>YouTube: <span class="muted">coming soon</span></p>
-      </div>
-    </section>
-
+    <!-- Footer -->
     <footer>
-      <div>&copy; <script>document.write(new Date().getFullYear())</script> theclutchdump. All rights reserved.</div>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#">Twitter</a>
+                <a href="#">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+            <p>&copy; 2025 AccelTest. All rights reserved.</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Contact: info@acceltest.com</p>
+        </div>
     </footer>
-  </main>
+
+    <script>
+        // Sample car data
+        const cars = [
+            {
+                id: 1,
+                name: "2018 Ford Mustang GT",
+                make: "Ford",
+                model: "Mustang",
+                year: "2018",
+                engine: "V8",
+                body: "coupe",
+                description: "Powerful American muscle with impressive straight-line performance",
+                results: {
+                    "0-60 mph": "4.2s",
+                    "0-100 mph": "9.8s",
+                    "Quarter Mile": "12.6s @ 115mph",
+                    "60-0 Braking": "105ft"
+                },
+                opinion: "The 2018 Mustang GT delivers exceptional performance for the price. The 5.0L V8 provides thrilling acceleration and a soundtrack to match. While the independent rear suspension greatly improves handling over previous generations, it still feels more at home on the highway than a tight canyon road."
+            },
+            {
+                id: 2,
+                name: "2020 Tesla Model 3 Performance",
+                make: "Tesla",
+                model: "Model 3",
+                year: "2020",
+                engine: "Electric",
+                body: "sedan",
+                description: "Electric performance sedan with instant torque delivery",
+                results: {
+                    "0-60 mph": "3.1s",
+                    "0-100 mph": "8.4s",
+                    "Quarter Mile": "11.5s @ 120mph",
+                    "60-0 Braking": "98ft"
+                },
+                opinion: "The Model 3 Performance redefines what we expect from a sports sedan. The instant torque delivery is addictive, and the handling is surprisingly nimble for a heavy EV. Track mode unlocks even more potential, making this one of the best-performing vehicles we've tested."
+            },
+            {
+                id: 3,
+                name: "2019 Chevrolet Corvette Z06",
+                make: "Chevrolet",
+                model: "Corvette",
+                year: "2019",
+                engine: "V8",
+                body: "coupe",
+                description: "Supercharged American supercar with track-focused performance",
+                results: {
+                    "0-60 mph": "2.95s",
+                    "0-100 mph": "7.2s",
+                    "Quarter Mile": "10.9s @ 127mph",
+                    "60-0 Braking": "94ft"
+                },
+                opinion: "The C7 Z06 represents incredible performance value. The supercharged LT4 V8 delivers relentless power, and the chassis can handle it all. This is a legitimate supercar competitor at a fraction of the price."
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentSort = 'name';
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            if (pageId === 'results') {
+                renderCars();
+            }
+        }
+
+        function renderCars() {
+            const grid = document.getElementById('carGrid');
+            let filteredCars = [...cars];
+
+            // Apply filters
+            if (currentFilter !== 'all') {
+                const [filterType, filterValue] = currentFilter.split(':');
+                filteredCars = cars.filter(car => car[filterType] === filterValue);
+            }
+
+            // Apply sorting
+            filteredCars.sort((a, b) => {
+                if (currentSort === 'name') return a.name.localeCompare(b.name);
+                if (currentSort === 'year') return b.year - a.year;
+                if (currentSort === 'performance') {
+                    const aTime = parseFloat(a.results["0-60 mph"]);
+                    const bTime = parseFloat(b.results["0-60 mph"]);
+                    return aTime - bTime;
+                }
+                return 0;
+            });
+
+            grid.innerHTML = filteredCars.map(car => `
+                <div class="car-card" onclick="showCarDetail(${car.id})">
+                    <div class="car-image">${car.name}</div>
+                    <div class="car-info">
+                        <h3>${car.name}</h3>
+                        <p>${car.description}</p>
+                        <div class="car-specs">
+                            <span class="spec-tag">${car.make}</span>
+                            <span class="spec-tag">${car.year}</span>
+                            <span class="spec-tag">${car.engine}</span>
+                            <span class="spec-tag">${car.body}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCars(type, value) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (type === 'all') {
+                currentFilter = 'all';
+            } else {
+                currentFilter = `${type}:${value}`;
+            }
+            renderCars();
+        }
+
+        function sortCars(sortType) {
+            currentSort = sortType;
+            renderCars();
+        }
+
+        function showCarDetail(carId) {
+            const car = cars.find(c => c.id === carId);
+            if (!car) return;
+
+            document.getElementById('detailName').textContent = car.name;
+            document.getElementById('detailImage').textContent = car.name;
+            document.getElementById('detailOpinion').textContent = car.opinion;
+
+            document.getElementById('detailSpecs').innerHTML = `
+                <span class="spec-tag">${car.make}</span>
+                <span class="spec-tag">${car.model}</span>
+                <span class="spec-tag">${car.year}</span>
+                <span class="spec-tag">${car.engine}</span>
+                <span class="spec-tag">${car.body}</span>
+            `;
+
+            document.getElementById('detailResults').innerHTML = Object.entries(car.results)
+                .map(([key, value]) => `
+                    <div class="result-card">
+                        <h3>${key}</h3>
+                        <div class="result-value">${value}</div>
+                    </div>
+                `).join('');
+
+            showPage('detail');
+        }
+
+        // Initialize
+        renderCars();
+    </script>
 </body>
 </html>
