@@ -76,8 +76,16 @@ let activeFilters = {
     body: [],
     engine: []
 };
+let isAdmin = false;
+let nextCarId = 5;
 
 function showPage(pageId) {
+    // Check if trying to access submit page without admin access
+    if (pageId === 'submit' && !isAdmin) {
+        alert('You must be signed in as an admin to access this page.');
+        return;
+    }
+    
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
     });
@@ -238,3 +246,83 @@ function showCarDetail(carId) {
 
 // Initialize
 renderCars();
+
+// Admin Authentication
+function handleSignIn(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorDiv = document.getElementById('signinError');
+    
+    if (username === 'admin' && password === '1234') {
+        isAdmin = true;
+        errorDiv.textContent = '';
+        
+        // Show admin menu items
+        document.getElementById('submitTestLink').style.display = 'block';
+        document.getElementById('signOutLink').style.display = 'block';
+        document.getElementById('signInLink').style.display = 'none';
+        
+        // Clear form
+        document.getElementById('signinForm').reset();
+        
+        // Redirect to home
+        showPage('home');
+        alert('Successfully signed in as admin!');
+    } else {
+        errorDiv.textContent = 'Invalid username or password';
+    }
+}
+
+function signOut() {
+    isAdmin = false;
+    
+    // Hide admin menu items
+    document.getElementById('submitTestLink').style.display = 'none';
+    document.getElementById('signOutLink').style.display = 'none';
+    document.getElementById('signInLink').style.display = 'block';
+    
+    // Redirect to home
+    showPage('home');
+    alert('Successfully signed out');
+}
+
+// Handle Test Submission
+function handleTestSubmit(event) {
+    event.preventDefault();
+    
+    if (!isAdmin) {
+        alert('You must be signed in as an admin to submit tests.');
+        return;
+    }
+    
+    // Get form values
+    const newCar = {
+        id: nextCarId++,
+        name: document.getElementById('carName').value,
+        make: document.getElementById('make').value,
+        model: document.getElementById('model').value,
+        year: document.getElementById('year').value,
+        engine: document.getElementById('engine').value,
+        body: document.getElementById('bodyType').value,
+        description: document.getElementById('description').value,
+        results: {
+            "0-60 mph": document.getElementById('zeroToSixty').value,
+            "0-100 mph": document.getElementById('zeroToHundred').value,
+            "Quarter Mile": document.getElementById('quarterMile').value,
+            "60-0 Braking": document.getElementById('braking').value
+        },
+        opinion: document.getElementById('opinion').value
+    };
+    
+    // Add new car to the beginning of the array
+    cars.unshift(newCar);
+    
+    // Clear form
+    document.getElementById('submitTestForm').reset();
+    
+    // Show success message and redirect
+    alert('Test successfully published!');
+    showPage('results');
+}
