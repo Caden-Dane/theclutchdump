@@ -20,6 +20,9 @@
                     <li><a href="#" onclick="showPage('results')">Tests</a></li>
                     <li><a href="#" onclick="showPage('about')">About</a></li>
                     <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+                    <li id="submitTestLink" style="display: none;"><a href="#" onclick="showPage('submit')">Submit Test</a></li>
+                    <li id="signInLink"><a href="#" onclick="showPage('signin')">Sign In</a></li>
+                    <li id="signOutLink" style="display: none;"><a href="#" onclick="signOut()">Sign Out</a></li>
                 </ul>
             </nav>
         </div>
@@ -155,6 +158,121 @@
         <div class="container">
             <h1>Contact</h1>
             <p>Contact information goes here.</p>
+        </div>
+    </div>
+
+    <!-- Sign In Page -->
+    <div id="signin" class="page">
+        <div class="container">
+            <div class="signin-container">
+                <h1>Admin Sign In</h1>
+                <form id="signinForm" onsubmit="handleSignIn(event)">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div id="signinError" class="error-message"></div>
+                    <button type="submit" class="submit-btn">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Test Page -->
+    <div id="submit" class="page">
+        <div class="container">
+            <h1>Submit New Test</h1>
+            <form id="submitTestForm" onsubmit="handleTestSubmit(event)" class="test-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="carName">Car Name *</label>
+                        <input type="text" id="carName" name="carName" placeholder="e.g., 2018 Ford Mustang GT" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="make">Make *</label>
+                        <input type="text" id="make" name="make" placeholder="e.g., Ford" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="model">Model *</label>
+                        <input type="text" id="model" name="model" placeholder="e.g., Mustang" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year *</label>
+                        <input type="text" id="year" name="year" placeholder="e.g., 2018" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="engine">Engine *</label>
+                        <select id="engine" name="engine" required>
+                            <option value="">Select Engine</option>
+                            <option value="3-cyl">3 Cylinder</option>
+                            <option value="4-cyl">4 Cylinder</option>
+                            <option value="5-cyl">5 Cylinder</option>
+                            <option value="6-cyl">6 Cylinder</option>
+                            <option value="V8">V8</option>
+                            <option value="V10">V10</option>
+                            <option value="V12">V12</option>
+                            <option value="Electric">Electric</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bodyType">Body Type *</label>
+                        <select id="bodyType" name="bodyType" required>
+                            <option value="">Select Body Type</option>
+                            <option value="sedan">Sedan</option>
+                            <option value="truck">Truck</option>
+                            <option value="coupe">Coupe</option>
+                            <option value="hatchback">Hatchback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" rows="3" placeholder="Brief description of the vehicle" required></textarea>
+                </div>
+
+                <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Test Results</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="zeroToSixty">0-60 mph *</label>
+                        <input type="text" id="zeroToSixty" name="zeroToSixty" placeholder="e.g., 4.2s" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zeroToHundred">0-100 mph *</label>
+                        <input type="text" id="zeroToHundred" name="zeroToHundred" placeholder="e.g., 9.8s" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quarterMile">Quarter Mile *</label>
+                        <input type="text" id="quarterMile" name="quarterMile" placeholder="e.g., 12.6s @ 115mph" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="braking">60-0 Braking *</label>
+                        <input type="text" id="braking" name="braking" placeholder="e.g., 105ft" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="opinion">Your Opinion *</label>
+                    <textarea id="opinion" name="opinion" rows="5" placeholder="Detailed review and opinion about the vehicle" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Publish Test</button>
+            </form>
         </div>
     </div>
 
