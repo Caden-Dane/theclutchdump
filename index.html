@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Car Acceleration Testing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,17 +15,19 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Audiowide', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #e0e0e0;
+            background: #1a1a1a;
         }
 
         /* Header */
         header {
-            background: #2c3e50;
+            background: #242424;
             color: white;
             padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            border-bottom: 2px solid #d32f2f;
         }
 
         .header-content {
@@ -37,6 +42,7 @@
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
+            color: #d32f2f;
         }
 
         nav ul {
@@ -52,26 +58,45 @@
         }
 
         nav a:hover {
-            color: #3498db;
+            color: #d32f2f;
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80') center/cover;
             color: white;
-            padding: 6rem 2rem;
+            padding: 8rem 2rem;
             text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(211, 47, 47, 0.3) 0%, rgba(10, 10, 10, 0.8) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
 
         .hero p {
             font-size: 1.3rem;
             max-width: 600px;
             margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
 
         /* Container */
@@ -83,7 +108,7 @@
 
         /* Testing Procedures Section */
         .procedures-section {
-            background: #f8f9fa;
+            background: #242424;
             padding: 3rem 2rem;
         }
 
@@ -95,18 +120,53 @@
         }
 
         .procedure-card {
-            background: white;
+            background: #2a2a2a;
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid #3a3a3a;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .procedure-card:hover {
+            transform: translateY(-5px);
+            border-color: #d32f2f;
         }
 
         .procedure-card h3 {
-            color: #2c3e50;
+            color: #d32f2f;
             margin-bottom: 1rem;
         }
 
-        /* Results Page */
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-bar {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 25px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #d32f2f;
+        }
+
+        .search-bar::placeholder {
+            color: #666;
+        }
+
+        /* Filters */
         .filters {
             display: flex;
             gap: 1rem;
@@ -120,31 +180,159 @@
             align-items: center;
         }
 
-        .filter-btn {
+        .filter-btn, .modal-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #333;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .modal-btn:hover {
+            border-color: #d32f2f;
+            color: #d32f2f;
+        }
+
+        .filter-btn.active {
+            background: #d32f2f;
+            color: white;
+            border-color: #d32f2f;
+        }
+
+        .sort-select {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #333;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid #d32f2f;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            color: #d32f2f;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #d32f2f;
+        }
+
+        .filter-section {
+            margin-bottom: 2rem;
+        }
+
+        .filter-section h3 {
+            color: #d32f2f;
+            margin-bottom: 1rem;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-option {
             padding: 0.5rem 1rem;
-            border: 2px solid #e0e0e0;
-            background: white;
+            background: #0a0a0a;
+            border: 2px solid #333;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .filter-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
+        .filter-option:hover {
+            border-color: #d32f2f;
         }
 
-        .filter-btn.active {
-            background: #667eea;
+        .filter-option.selected {
+            background: #d32f2f;
+            border-color: #d32f2f;
             color: white;
-            border-color: #667eea;
         }
 
-        .sort-select {
-            padding: 0.5rem 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 20px;
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .apply-btn {
+            padding: 0.8rem 2rem;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 25px;
             cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .apply-btn:hover {
+            background: #b71c1c;
+        }
+
+        .clear-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            color: #e0e0e0;
+            border: 2px solid #333;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .clear-btn:hover {
+            border-color: #d32f2f;
+            color: #d32f2f;
         }
 
         /* Car Grid */
@@ -155,23 +343,25 @@
         }
 
         .car-card {
-            background: white;
+            background: #1a1a1a;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
             cursor: pointer;
         }
 
         .car-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(211, 47, 47, 0.3);
+            border-color: #d32f2f;
         }
 
         .car-image {
             width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d32f2f 0%, #1a1a1a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -184,7 +374,7 @@
         }
 
         .car-info h3 {
-            color: #2c3e50;
+            color: #d32f2f;
             margin-bottom: 0.5rem;
         }
 
@@ -197,7 +387,8 @@
 
         .spec-tag {
             padding: 0.3rem 0.8rem;
-            background: #f0f0f0;
+            background: #0a0a0a;
+            border: 1px solid #333;
             border-radius: 15px;
             font-size: 0.85rem;
         }
@@ -208,18 +399,23 @@
             margin-bottom: 3rem;
         }
 
+        .detail-header h1 {
+            color: #d32f2f;
+        }
+
         .detail-image {
             width: 100%;
             max-width: 800px;
             height: 400px;
             margin: 2rem auto;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d32f2f 0%, #1a1a1a 100%);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 1.5rem;
+            border: 2px solid #333;
         }
 
         .video-placeholder {
@@ -227,7 +423,8 @@
             max-width: 600px;
             height: 300px;
             margin: 2rem auto;
-            background: #f0f0f0;
+            background: #1a1a1a;
+            border: 2px solid #333;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -243,15 +440,16 @@
         }
 
         .result-card {
-            background: white;
+            background: #1a1a1a;
             padding: 2rem;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid #333;
             text-align: center;
         }
 
         .result-card h3 {
-            color: #666;
+            color: #999;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
         }
@@ -259,23 +457,30 @@
         .result-value {
             font-size: 2rem;
             font-weight: bold;
-            color: #667eea;
+            color: #d32f2f;
         }
 
         .opinion-section {
-            background: #f8f9fa;
+            background: #1a1a1a;
             padding: 2rem;
             border-radius: 12px;
             margin: 2rem 0;
+            border: 1px solid #333;
+        }
+
+        .opinion-section h2 {
+            color: #d32f2f;
+            margin-bottom: 1rem;
         }
 
         /* Footer */
         footer {
-            background: #2c3e50;
+            background: #1a1a1a;
             color: white;
             padding: 2rem;
             text-align: center;
             margin-top: 4rem;
+            border-top: 2px solid #d32f2f;
         }
 
         .footer-content {
@@ -293,6 +498,11 @@
         .social-links a {
             color: white;
             text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #d32f2f;
         }
 
         /* Page Navigation */
@@ -307,7 +517,7 @@
         .back-btn {
             display: inline-block;
             padding: 0.8rem 1.5rem;
-            background: #667eea;
+            background: #d32f2f;
             color: white;
             text-decoration: none;
             border-radius: 25px;
@@ -316,7 +526,11 @@
         }
 
         .back-btn:hover {
-            background: #5568d3;
+            background: #b71c1c;
+        }
+
+        h1, h2 {
+            color: #d32f2f;
         }
     </style>
 </head>
@@ -339,8 +553,10 @@
     <!-- Home Page -->
     <div id="home" class="page active">
         <div class="hero">
-            <h1>Professional Car Acceleration Testing</h1>
-            <p>Precision metrics and real-world performance data for automotive enthusiasts</p>
+            <div class="hero-content">
+                <h1>Professional Car Acceleration Testing</h1>
+                <p>Precision metrics and real-world performance data for automotive enthusiasts</p>
+            </div>
         </div>
 
         <div class="procedures-section">
@@ -365,6 +581,11 @@
         <div class="container">
             <h1>Test Results</h1>
             
+            <div class="search-container">
+                <input type="text" class="search-bar" id="searchBar" placeholder="Search for cars..." onkeyup="searchCars()">
+                <button class="modal-btn" onclick="openFilterModal()">🔍 Filter</button>
+            </div>
+
             <div class="filters">
                 <div class="filter-group">
                     <label>Sort:</label>
@@ -374,20 +595,50 @@
                         <option value="performance">Performance</option>
                     </select>
                 </div>
-                <div class="filter-group">
-                    <label>Filter:</label>
-                    <button class="filter-btn active" onclick="filterCars('all')">All</button>
-                    <button class="filter-btn" onclick="filterCars('make', 'Ford')">Ford</button>
-                    <button class="filter-btn" onclick="filterCars('make', 'Mustang')">Mustang</button>
-                    <button class="filter-btn" onclick="filterCars('year', '2018')">2018</button>
-                    <button class="filter-btn" onclick="filterCars('engine', 'V8')">V8</button>
-                    <button class="filter-btn" onclick="filterCars('body', 'coupe')">Coupe</button>
-                    <button class="filter-btn" onclick="filterCars('body', 'sedan')">Sedan</button>
-                </div>
             </div>
 
             <div class="car-grid" id="carGrid">
                 <!-- Cars will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Filter Options</h2>
+                <button class="close-modal" onclick="closeFilterModal()">&times;</button>
+            </div>
+
+            <div class="filter-section">
+                <h3>Body Type</h3>
+                <div class="filter-options" id="bodyTypeFilters">
+                    <div class="filter-option" onclick="toggleFilter('body', 'sedan')">Sedan</div>
+                    <div class="filter-option" onclick="toggleFilter('body', 'truck')">Truck</div>
+                    <div class="filter-option" onclick="toggleFilter('body', 'coupe')">Coupe</div>
+                    <div class="filter-option" onclick="toggleFilter('body', 'hatchback')">Hatchback</div>
+                    <div class="filter-option" onclick="toggleFilter('body', 'other')">Other</div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>Engine</h3>
+                <div class="filter-options" id="engineFilters">
+                    <div class="filter-option" onclick="toggleFilter('engine', '3-cyl')">3 Cylinder</div>
+                    <div class="filter-option" onclick="toggleFilter('engine', '4-cyl')">4 Cylinder</div>
+                    <div class="filter-option" onclick="toggleFilter('engine', '5-cyl')">5 Cylinder</div>
+                    <div class="filter-option" onclick="toggleFilter('engine', '6-cyl')">6 Cylinder</div>
+                    <div class="filter-option" onclick="toggleFilter('engine', 'V8')">V8</div>
+                    <div class="filter-option" onclick="toggleFilter('engine', 'V10')">V10</div>
+                    <div class="filter-option" onclick="toggleFilter('engine', 'V12')">V12</div>
+                    <div class="filter-option" onclick="toggleFilter('engine', 'Electric')">Electric</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="clear-btn" onclick="clearFilters()">Clear All</button>
+                <button class="apply-btn" onclick="applyFilters()">Apply Filters</button>
             </div>
         </div>
     </div>
@@ -498,11 +749,32 @@
                     "60-0 Braking": "94ft"
                 },
                 opinion: "The C7 Z06 represents incredible performance value. The supercharged LT4 V8 delivers relentless power, and the chassis can handle it all. This is a legitimate supercar competitor at a fraction of the price."
+            },
+            {
+                id: 4,
+                name: "2021 Toyota GR Yaris",
+                make: "Toyota",
+                model: "GR Yaris",
+                year: "2021",
+                engine: "3-cyl",
+                body: "hatchback",
+                description: "Rally-bred hot hatch with all-wheel drive",
+                results: {
+                    "0-60 mph": "5.5s",
+                    "0-100 mph": "14.3s",
+                    "Quarter Mile": "14.1s @ 98mph",
+                    "60-0 Braking": "108ft"
+                },
+                opinion: "The GR Yaris is a proper homologation special. The turbocharged three-cylinder delivers surprising punch, and the GR-Four AWD system provides incredible grip. This is a car built for the twisties, not the drag strip."
             }
         ];
 
-        let currentFilter = 'all';
         let currentSort = 'name';
+        let searchQuery = '';
+        let activeFilters = {
+            body: [],
+            engine: []
+        };
 
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => {
@@ -515,14 +787,86 @@
             }
         }
 
+        function searchCars() {
+            searchQuery = document.getElementById('searchBar').value.toLowerCase();
+            renderCars();
+        }
+
+        function openFilterModal() {
+            document.getElementById('filterModal').classList.add('active');
+        }
+
+        function closeFilterModal() {
+            document.getElementById('filterModal').classList.remove('active');
+        }
+
+        function toggleFilter(type, value) {
+            const index = activeFilters[type].indexOf(value);
+            if (index > -1) {
+                activeFilters[type].splice(index, 1);
+            } else {
+                activeFilters[type].push(value);
+            }
+            updateFilterUI();
+        }
+
+        function updateFilterUI() {
+            document.querySelectorAll('.filter-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            activeFilters.body.forEach(filter => {
+                const option = Array.from(document.querySelectorAll('#bodyTypeFilters .filter-option'))
+                    .find(el => el.textContent.toLowerCase() === filter);
+                if (option) option.classList.add('selected');
+            });
+
+            activeFilters.engine.forEach(filter => {
+                const option = Array.from(document.querySelectorAll('#engineFilters .filter-option'))
+                    .find(el => el.textContent.toLowerCase().includes(filter.toLowerCase()));
+                if (option) option.classList.add('selected');
+            });
+        }
+
+        function clearFilters() {
+            activeFilters = {
+                body: [],
+                engine: []
+            };
+            updateFilterUI();
+        }
+
+        function applyFilters() {
+            closeFilterModal();
+            renderCars();
+        }
+
         function renderCars() {
             const grid = document.getElementById('carGrid');
             let filteredCars = [...cars];
 
-            // Apply filters
-            if (currentFilter !== 'all') {
-                const [filterType, filterValue] = currentFilter.split(':');
-                filteredCars = cars.filter(car => car[filterType] === filterValue);
+            // Apply search
+            if (searchQuery) {
+                filteredCars = filteredCars.filter(car => 
+                    car.name.toLowerCase().includes(searchQuery) ||
+                    car.make.toLowerCase().includes(searchQuery) ||
+                    car.model.toLowerCase().includes(searchQuery) ||
+                    car.description.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            // Apply body type filters
+            if (activeFilters.body.length > 0) {
+                filteredCars = filteredCars.filter(car => 
+                    activeFilters.body.includes(car.body)
+                );
+            }
+
+            // Apply engine filters
+            if (activeFilters.engine.length > 0) {
+                filteredCars = filteredCars.filter(car => 
+                    activeFilters.engine.includes(car.engine)
+                );
             }
 
             // Apply sorting
@@ -536,6 +880,11 @@
                 }
                 return 0;
             });
+
+            if (filteredCars.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No cars found matching your criteria.</p>';
+                return;
+            }
 
             grid.innerHTML = filteredCars.map(car => `
                 <div class="car-card" onclick="showCarDetail(${car.id})">
@@ -554,19 +903,6 @@
             `).join('');
         }
 
-        function filterCars(type, value) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            if (type === 'all') {
-                currentFilter = 'all';
-            } else {
-                currentFilter = `${type}:${value}`;
-            }
-            renderCars();
-        }
-
         function sortCars(sortType) {
             currentSort = sortType;
             renderCars();
@@ -582,25 +918,4 @@
 
             document.getElementById('detailSpecs').innerHTML = `
                 <span class="spec-tag">${car.make}</span>
-                <span class="spec-tag">${car.model}</span>
-                <span class="spec-tag">${car.year}</span>
-                <span class="spec-tag">${car.engine}</span>
-                <span class="spec-tag">${car.body}</span>
-            `;
-
-            document.getElementById('detailResults').innerHTML = Object.entries(car.results)
-                .map(([key, value]) => `
-                    <div class="result-card">
-                        <h3>${key}</h3>
-                        <div class="result-value">${value}</div>
-                    </div>
-                `).join('');
-
-            showPage('detail');
-        }
-
-        // Initialize
-        renderCars();
-    </script>
-</body>
-</html>
+                <span class="spec-tag">${car.model
