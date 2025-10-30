@@ -4,11 +4,16 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Audiowide', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #e0e0e0;
     background: #1a1a1a;
+    overflow-x: hidden;
 }
 
 /* Header */
@@ -23,10 +28,11 @@ header {
 .header-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .logo {
@@ -38,7 +44,30 @@ header {
 nav ul {
     list-style: none;
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Mobile Header */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    nav ul {
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    nav a {
+        font-size: 0.9rem;
+    }
 }
 
 nav a {
@@ -89,24 +118,56 @@ nav a:hover {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
 
+/* Responsive Typography */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .hero {
+        padding: 4rem 1rem;
+    }
+}
+
 /* Container */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 3rem 2rem;
+    padding: 3rem 1rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 2rem 1rem;
+    }
 }
 
 /* Testing Procedures Section */
 .procedures-section {
     background: #242424;
-    padding: 3rem 2rem;
+    padding: 3rem 1rem;
 }
 
 .procedures-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .procedures-section {
+        padding: 2rem 1rem;
+    }
+    
+    .procedures-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
 }
 
 .procedure-card {
@@ -134,10 +195,12 @@ nav a:hover {
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .search-bar {
     flex: 1;
+    min-width: 200px;
     padding: 0.8rem 1.5rem;
     background: #2a2a2a;
     border: 2px solid #3a3a3a;
@@ -145,6 +208,22 @@ nav a:hover {
     color: #e0e0e0;
     font-size: 1rem;
     transition: border-color 0.3s;
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-bar {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .modal-btn {
+        width: 100%;
+    }
 }
 
 .search-bar:focus {
@@ -227,6 +306,23 @@ nav a:hover {
     width: 90%;
     border: 2px solid #d32f2f;
     box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .filter-section h3 {
+        font-size: 1.1rem;
+    }
 }
 
 .modal-header {
@@ -328,8 +424,15 @@ nav a:hover {
 /* Car Grid */
 .car-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .car-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
 }
 
 .car-card {
@@ -424,9 +527,24 @@ nav a:hover {
 
 .results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
     margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .results-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+    
+    .result-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .result-value {
+        font-size: 1.5rem;
+    }
 }
 
 .result-card {
@@ -521,4 +639,27 @@ footer {
 
 h1, h2 {
     color: #d32f2f;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+    }
+    
+    .detail-image {
+        height: 250px;
+    }
+    
+    .video-placeholder {
+        height: 200px;
+    }
+    
+    .social-links {
+        flex-wrap: wrap;
+    }
 }
