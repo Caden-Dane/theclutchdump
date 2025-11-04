@@ -1,90 +1,14 @@
-// Sample car data
-const cars = [
-    {
-        id: 1,
-        name: "2018 Ford Mustang GT",
-        make: "Ford",
-        model: "Mustang",
-        year: "2018",
-        engine: "V8",
-        body: "coupe",
-        description: "Powerful American muscle with impressive straight-line performance",
-        results: {
-            "0-60 mph": "4.2s",
-            "0-100 mph": "9.8s",
-            "Quarter Mile": "12.6s @ 115mph",
-            "60-0 Braking": "105ft"
-        },
-        opinion: "The 2018 Mustang GT delivers exceptional performance for the price. The 5.0L V8 provides thrilling acceleration and a soundtrack to match. While the independent rear suspension greatly improves handling over previous generations, it still feels more at home on the highway than a tight canyon road."
-    },
-    {
-        id: 2,
-        name: "2020 Tesla Model 3 Performance",
-        make: "Tesla",
-        model: "Model 3",
-        year: "2020",
-        engine: "Electric",
-        body: "sedan",
-        description: "Electric performance sedan with instant torque delivery",
-        results: {
-            "0-60 mph": "3.1s",
-            "0-100 mph": "8.4s",
-            "Quarter Mile": "11.5s @ 120mph",
-            "60-0 Braking": "98ft"
-        },
-        opinion: "The Model 3 Performance redefines what we expect from a sports sedan. The instant torque delivery is addictive, and the handling is surprisingly nimble for a heavy EV. Track mode unlocks even more potential, making this one of the best-performing vehicles we've tested."
-    },
-    {
-        id: 3,
-        name: "2019 Chevrolet Corvette Z06",
-        make: "Chevrolet",
-        model: "Corvette",
-        year: "2019",
-        engine: "V8",
-        body: "coupe",
-        description: "Supercharged American supercar with track-focused performance",
-        results: {
-            "0-60 mph": "2.95s",
-            "0-100 mph": "7.2s",
-            "Quarter Mile": "10.9s @ 127mph",
-            "60-0 Braking": "94ft"
-        },
-        opinion: "The C7 Z06 represents incredible performance value. The supercharged LT4 V8 delivers relentless power, and the chassis can handle it all. This is a legitimate supercar competitor at a fraction of the price."
-    },
-    {
-        id: 4,
-        name: "2021 Toyota GR Yaris",
-        make: "Toyota",
-        model: "GR Yaris",
-        year: "2021",
-        engine: "3-cyl",
-        body: "hatchback",
-        description: "Rally-bred hot hatch with all-wheel drive",
-        results: {
-            "0-60 mph": "5.5s",
-            "0-100 mph": "14.3s",
-            "Quarter Mile": "14.1s @ 98mph",
-            "60-0 Braking": "108ft"
-        },
-        opinion: "The GR Yaris is a proper homologation special. The turbocharged three-cylinder delivers surprising punch, and the GR-Four AWD system provides incredible grip. This is a car built for the twisties, not the drag strip."
-    }
-];
 
+let cars = [];
 let currentSort = 'name';
 let searchQuery = '';
 let activeFilters = {
     body: [],
     engine: []
 };
-let isAdmin = false;
 let nextCarId = 5;
 
 function showPage(pageId) {
-    // Check if trying to access submit page without admin access
-    if (pageId === 'submit' && !isAdmin) {
-        alert('You must be signed in as an admin to access this page.');
-        return;
-    }
     
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -150,67 +74,33 @@ function applyFilters() {
     renderCars();
 }
 
-function renderCars() {
-    const grid = document.getElementById('carGrid');
-    let filteredCars = [...cars];
+async function renderCars() {
+  const grid = document.getElementById('carGrid');
+  const snapshot = await getDocs(collection(db, "cars"));
+  const cars = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Apply search
-    if (searchQuery) {
-        filteredCars = filteredCars.filter(car => 
-            car.name.toLowerCase().includes(searchQuery) ||
-            car.make.toLowerCase().includes(searchQuery) ||
-            car.model.toLowerCase().includes(searchQuery) ||
-            car.description.toLowerCase().includes(searchQuery)
-        );
-    }
+  if (cars.length === 0) {
+    grid.innerHTML = '<p style="color:#888;">No cars found.</p>';
+    return;
+  }
 
-    // Apply body type filters
-    if (activeFilters.body.length > 0) {
-        filteredCars = filteredCars.filter(car => 
-            activeFilters.body.includes(car.body)
-        );
-    }
-
-    // Apply engine filters
-    if (activeFilters.engine.length > 0) {
-        filteredCars = filteredCars.filter(car => 
-            activeFilters.engine.includes(car.engine)
-        );
-    }
-
-    // Apply sorting
-    filteredCars.sort((a, b) => {
-        if (currentSort === 'name') return a.name.localeCompare(b.name);
-        if (currentSort === 'year') return b.year - a.year;
-        if (currentSort === 'performance') {
-            const aTime = parseFloat(a.results["0-60 mph"]);
-            const bTime = parseFloat(b.results["0-60 mph"]);
-            return aTime - bTime;
-        }
-        return 0;
-    });
-
-    if (filteredCars.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No cars found matching your criteria.</p>';
-        return;
-    }
-
-    grid.innerHTML = filteredCars.map(car => `
-        <div class="car-card" onclick="showCarDetail(${car.id})">
-            <div class="car-image">${car.name}</div>
-            <div class="car-info">
-                <h3>${car.name}</h3>
-                <p>${car.description}</p>
-                <div class="car-specs">
-                    <span class="spec-tag">${car.make}</span>
-                    <span class="spec-tag">${car.year}</span>
-                    <span class="spec-tag">${car.engine}</span>
-                    <span class="spec-tag">${car.body}</span>
-                </div>
-            </div>
+  grid.innerHTML = cars.map(car => `
+    <div class="car-card" onclick="showCarDetail('${car.id}')">
+      <div class="car-image">${car.name}</div>
+      <div class="car-info">
+        <h3>${car.name}</h3>
+        <p>${car.description}</p>
+        <div class="car-specs">
+          <span class="spec-tag">${car.make}</span>
+          <span class="spec-tag">${car.year}</span>
+          <span class="spec-tag">${car.engine}</span>
+          <span class="spec-tag">${car.body}</span>
         </div>
-    `).join('');
+      </div>
+    </div>
+  `).join('');
 }
+
 
 function sortCars(sortType) {
     currentSort = sortType;
@@ -233,13 +123,13 @@ function showCarDetail(carId) {
         <span class="spec-tag">${car.body}</span>
     `;
 
-    document.getElementById('detailResults').innerHTML = Object.entries(car.results)
-        .map(([key, value]) => `
-            <div class="result-card">
-                <h3>${key}</h3>
-                <div class="result-value">${value}</div>
-            </div>
-        `).join('');
+    document.getElementById('detailResults').innerHTML = `
+    <div class="result-card"><h3>0–60 mph</h3><div class="result-value">${car.zeroToSixty || '—'}</div></div>
+    <div class="result-card"><h3>0–100 mph</h3><div class="result-value">${car.zeroToHundred || '—'}</div></div>
+    <div class="result-card"><h3>¼ Mile</h3><div class="result-value">${car.quarterMile || '—'}</div></div>
+    <div class="result-card"><h3>60–0 Braking</h3><div class="result-value">${car.braking || '—'}</div></div>
+    `;
+
 
     showPage('detail');
 }
@@ -247,82 +137,75 @@ function showCarDetail(carId) {
 // Initialize
 renderCars();
 
-// Admin Authentication
-function handleSignIn(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const errorDiv = document.getElementById('signinError');
-    
-    if (username === 'admin' && password === '1234') {
-        isAdmin = true;
-        errorDiv.textContent = '';
-        
-        // Show admin menu items
-        document.getElementById('submitTestLink').style.display = 'block';
-        document.getElementById('signOutLink').style.display = 'block';
-        document.getElementById('signInLink').style.display = 'none';
-        
-        // Clear form
-        document.getElementById('signinForm').reset();
-        
-        // Redirect to home
-        showPage('home');
-        alert('Successfully signed in as admin!');
-    } else {
-        errorDiv.textContent = 'Invalid username or password';
-    }
-}
+async function handleSignIn(event) {
+  event.preventDefault();
+  const email = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const errorDiv = document.getElementById('signinError');
 
-function signOut() {
-    isAdmin = false;
-    
-    // Hide admin menu items
-    document.getElementById('submitTestLink').style.display = 'none';
-    document.getElementById('signOutLink').style.display = 'none';
-    document.getElementById('signInLink').style.display = 'block';
-    
-    // Redirect to home
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    errorDiv.textContent = '';
+    alert('Signed in successfully');
     showPage('home');
-    alert('Successfully signed out');
+  } catch (error) {
+    errorDiv.textContent = 'Invalid email or password';
+  }
 }
 
-// Handle Test Submission
-function handleTestSubmit(event) {
-    event.preventDefault();
-    
-    if (!isAdmin) {
-        alert('You must be signed in as an admin to submit tests.');
-        return;
-    }
-    
-    // Get form values
-    const newCar = {
-        id: nextCarId++,
-        name: document.getElementById('carName').value,
-        make: document.getElementById('make').value,
-        model: document.getElementById('model').value,
-        year: document.getElementById('year').value,
-        engine: document.getElementById('engine').value,
-        body: document.getElementById('bodyType').value,
-        description: document.getElementById('description').value,
-        results: {
-            "0-60 mph": document.getElementById('zeroToSixty').value,
-            "0-100 mph": document.getElementById('zeroToHundred').value,
-            "Quarter Mile": document.getElementById('quarterMile').value,
-            "60-0 Braking": document.getElementById('braking').value
-        },
-        opinion: document.getElementById('opinion').value
-    };
-    
-    // Add new car to the beginning of the array
-    cars.unshift(newCar);
-    
-    // Clear form
-    document.getElementById('submitTestForm').reset();
-    
-    // Show success message and redirect
-    alert('Test successfully published!');
-    showPage('results');
+// Watch for auth state changes
+onAuthStateChanged(auth, (user) => {
+  const submitLink = document.getElementById('submitTestLink');
+  const signInLink = document.getElementById('signInLink');
+  const signOutLink = document.getElementById('signOutLink');
+
+  if (user) {
+    submitLink.style.display = 'block';
+    signOutLink.style.display = 'block';
+    signInLink.style.display = 'none';
+  } else {
+    submitLink.style.display = 'none';
+    signOutLink.style.display = 'none';
+    signInLink.style.display = 'block';
+  }
+});
+
+async function signOutUser() {
+  await signOut(auth);
+  alert('Signed out');
+  showPage('home');
 }
+
+async function handleTestSubmit(event) {
+  event.preventDefault();
+  const user = auth.currentUser;
+  if (!user) {
+    alert('You must be signed in to submit a test.');
+    return;
+  }
+
+  const newCar = {
+    name: document.getElementById('carName').value,
+    make: document.getElementById('make').value,
+    model: document.getElementById('model').value,
+    year: document.getElementById('year').value,
+    engine: document.getElementById('engine').value,
+    body: document.getElementById('bodyType').value,
+    description: document.getElementById('description').value,
+    zeroToSixty: document.getElementById('zeroToSixty').value,
+    zeroToHundred: document.getElementById('zeroToHundred').value,
+    quarterMile: document.getElementById('quarterMile').value,
+    braking: document.getElementById('braking').value,
+    opinion: document.getElementById('opinion').value
+  };
+
+  try {
+    await addDoc(collection(db, "cars"), newCar);
+    alert('Car test submitted successfully!');
+    document.getElementById('submitTestForm').reset();
+    showPage('results');
+  } catch (e) {
+    alert('Error submitting test: ' + e.message);
+  }
+}
+

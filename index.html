@@ -22,7 +22,8 @@
                     <li><a href="#" onclick="showPage('contact')">Contact</a></li>
                     <li id="submitTestLink" style="display: none;"><a href="#" onclick="showPage('submit')">Submit Test</a></li>
                     <li id="signInLink"><a href="#" onclick="showPage('signin')">Sign In</a></li>
-                    <li id="signOutLink" style="display: none;"><a href="#" onclick="signOut()">Sign Out</a></li>
+                    <li id="signOutLink" style="display: none;"><a href="#" onclick="signOutUser()">Sign Out</a></li>
+
                 </ul>
             </nav>
         </div>
@@ -288,6 +289,34 @@
             <p style="font-size: 0.9rem; margin-top: 0.5rem;">Contact: info@acceltest.com</p>
         </div>
     </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "theclutchdump-236fa.firebaseapp.com",
+            projectId: "theclutchdump-236fa",
+            storageBucket: "theclutchdump-236fa.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Make them available globally
+        window.db = db;
+        window.auth = auth;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.getDocs = getDocs;
+    </script>
 
     <script src="script.js"></script>
 </body>
